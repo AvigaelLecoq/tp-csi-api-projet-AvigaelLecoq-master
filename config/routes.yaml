@@ -1,0 +1,7 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+#view:
+#  path: /view
+#  controller: App\Controller\viewController::view
