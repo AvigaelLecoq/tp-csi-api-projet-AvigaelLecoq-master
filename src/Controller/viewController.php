@@ -20,7 +20,7 @@ class viewController extends AbstractController
     /**
      * @Route("/load",name="proj_load")
      */
-    public function load(){
+    public function load(){ // API LOAD
 
         $clientCurl = new CurlHttpClient();
 		
@@ -41,9 +41,10 @@ class viewController extends AbstractController
 
         $Content = $reponse->getContent();
 		$resultArray = json_decode($Content, true)['results'][0];
-		
-		$varDirectory = $this->getParameter('kernel.project_dir') . '\\var';
-		$formationsDirectory = $varDirectory . '\\formations';
+		// Retourne le chemin du DOssier
+		$varDirectory = $this->getParameter('kernel.project_dir') . '\\var'; 
+        $formationsDirectory = $varDirectory . '\\formations';
+        // Si le dossier n'existe pas, alors on le créer
 		if (!file_exists($formationsDirectory))
 		{
 			mkdir($formationsDirectory);
@@ -65,6 +66,7 @@ class viewController extends AbstractController
 			}
 			catch (Exception $t)
 			{
+                // Gestion des erreurs au format Json
 				$errorArray['Type'] = 1;
 				return new JsonResponse([
 					'Event' => 'api/load',
@@ -99,8 +101,10 @@ class viewController extends AbstractController
 	/**
      * @Route("/view/{id}",name="proj_view")
      */
+
+
 	public function view(string $id){
-		$cache = new FilesystemAdapter();
+		$cache = new FilesystemAdapter(); // on initialise les variables
 
 		$varDirectory = $this->getParameter('kernel.project_dir') . '\\var';
 		$formationsDirectory = $varDirectory . '\\formations';
@@ -124,10 +128,13 @@ class viewController extends AbstractController
 			   $cache->save($cacheResult); 
 			}
 		}
-		
+		try{
 		$stringResponse = $cache->getItem($id)->get();
-		
-		return new Response($stringResponse);
+        }
+        catch(Exception $t) 
+        {
+        return new Response($stringResponse);
+        }
 	}
 
 }
